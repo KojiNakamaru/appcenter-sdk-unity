@@ -674,6 +674,10 @@ Task("PublishPackagesToStorage").Does(() =>
     var corePackageVersion = XmlPeek(File("UnityPackageSpecs/AppCenter.unitypackagespec"), "package/@version");
     var zippedPackages = "AppCenter-SDK-Unity-" + corePackageVersion + ".zip";
     var files = GetFiles("output/*.unitypackage");
+    if (files == null || !files.Any())
+    {
+        throw new Exception("Not found any unity packages in the output folder.");
+    }
     Zip("./", zippedPackages, files);
     Information("Publishing packages to blob storage: " + zippedPackages);
     AzureStorage.UploadFileToBlob(new AzureStorageSettings
